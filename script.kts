@@ -1,8 +1,23 @@
+import java.io.File
+import java.io.PrintWriter
+
 /**
  * Initial version by: park9eon
  * Initial version created on: 24/11/2017
  */
 // 참석 여부
+
+
+// 사건 발생 n회
+val COUNT_TEST = 1000
+// 참석 여부 확정
+val COUNT_GOING = 22
+// 참석 여부 미확정
+val COUNT_MIGHT = 6
+
+
+var total = 0
+
 enum class Attend(
         val prob: Float // 참석 확률
 ) {
@@ -14,7 +29,6 @@ enum class Attend(
 enum class MenuType {
     MEAT, SAKE, ETC
 }
-
 
 data class Member(val name: String, var attend: Attend) {
     init {
@@ -65,7 +79,7 @@ data class Menu(val type: MenuType, val name: String, val price: Int) {
 }
 
 // 결과를 가시화
-fun event(): Pair<Int, String> {
+fun event(out: PrintWriter): Pair<Int, String> {
 
     val goingMemberList = (1..COUNT_GOING).map {
         Member("참석 확정 ${it}님", Attend.GOING)
@@ -80,7 +94,7 @@ fun event(): Pair<Int, String> {
             }
     val totalSelectedMenu = joinedMemberList.map {
         it.selectMenu().apply {
-            println("참석자가 메뉴를 골랐습니다. [${this.joinToString(",")}]를 먹었습니다. ${this.sumBy { it.price }}원")
+            out.println("참석자가 메뉴를 골랐습니다. [${this.joinToString(",")}]를 먹었습니다. ${this.sumBy { it.price }}원")
         }
     }.flatten()
 
@@ -100,23 +114,16 @@ ${joinedMemberList.size} 명이 참석하여
 """)
 }
 
-// 사건 발생 n회
-val COUNT_TEST = 100
-// 참석 여부 확정
-val COUNT_GOING = 21
-// 참석 여부 미확정
-val COUNT_MIGHT = 6
-
-
-var total = 0
-// n회 테스트
-for (count in 1..COUNT_TEST) {
-    println("---------------------")
-    println("NEW event!!")
-    val event = event()
-    println(event.second)
-    total += event.first
-    println("---------------------")
+File("README.MD").printWriter().use { out ->
+    // n회 테스트
+    for (count in 1..COUNT_TEST) {
+        out.println("---------------------")
+        out.println("NEW event!!")
+        val event = event(out)
+        out.println(event.second)
+        total += event.first
+        out.println("---------------------")
+    }
+    out.println("############ 결과 ############")
+    out.println("총 ${COUNT_TEST}회 실행결과 평균 회비 ${total / COUNT_TEST}원이 필요!")
 }
-println("############ 결과 ############")
-println("총 ${COUNT_TEST}회 실행결과 평균 회비 ${total / COUNT_TEST}원이 필요!")
