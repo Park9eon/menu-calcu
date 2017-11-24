@@ -79,7 +79,7 @@ data class Menu(val type: MenuType, val name: String, val price: Int) {
 }
 
 // 결과를 가시화
-fun event(out: PrintWriter): Pair<Int, String> {
+fun event(): Pair<Int, String> {
 
     val goingMemberList = (1..COUNT_GOING).map {
         Member("참석 확정 ${it}님", Attend.GOING)
@@ -94,13 +94,13 @@ fun event(out: PrintWriter): Pair<Int, String> {
             }
     val totalSelectedMenu = joinedMemberList.map {
         it.selectMenu().apply {
-            out.println("참석자가 메뉴를 골랐습니다. [${this.joinToString(",")}]를 먹었습니다. ${this.sumBy { it.price }}원")
+            println("참석자가 메뉴를 골랐습니다. [${this.joinToString(",")}]를 먹었습니다. ${this.sumBy { it.price }}원")
         }
     }.flatten()
 
     val sum = totalSelectedMenu.sumBy { it.price }
     return Pair(sum / joinedMemberList.size,
-            """
+"""
 ${joinedMemberList.size} 명이 참석하여
 [${
             totalSelectedMenu.groupBy { it.name }
@@ -117,13 +117,13 @@ ${joinedMemberList.size} 명이 참석하여
 File("README.MD").printWriter().use { out ->
     // n회 테스트
     for (count in 1..COUNT_TEST) {
+        out.println("NEW Event!!")
         out.println("---------------------")
-        out.println("NEW event!!")
-        val event = event(out)
+        val event = event()
         out.println(event.second)
         total += event.first
-        out.println("---------------------")
     }
-    out.println("############ 결과 ############")
+    out.println("결과")
+    out.println("---------------------")
     out.println("총 ${COUNT_TEST}회 실행결과 평균 회비 ${total / COUNT_TEST}원이 필요!")
 }
