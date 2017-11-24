@@ -101,29 +101,43 @@ fun event(): Pair<Int, String> {
     val sum = totalSelectedMenu.sumBy { it.price }
     return Pair(sum / joinedMemberList.size,
 """
-${joinedMemberList.size} 명이 참석하여
-[${
-            totalSelectedMenu.groupBy { it.name }
-                    .map {
-                        "${it.key} - ${it.value.size}개"
-                    }
-                    .joinToString(", ")
-            }]
+    ${joinedMemberList.size} 명이 참석하여
+    [${
+                totalSelectedMenu.groupBy { it.name }
+                        .map {
+                            "${it.key} - ${it.value.size}개"
+                        }
+                        .joinToString(", ")
+                }]
 
-총 ${sum}원
+    총 ${sum}원
 """)
 }
 
 File("README.MD").printWriter().use { out ->
+    out.println("# 메뉴판")
+    out.println("### 주메뉴")
+    Menu.MAIN_MENU_LIST.forEach {
+        out.println("${it.name} - ${it.price}원")
+    }
+    out.println("### 주류")
+    Menu.DRINK_MENU_LIST.forEach {
+        out.println("${it.name} - ${it.price}원")
+    }
+    out.println("### 사이드메뉴")
+    Menu.SIDE_MENU_LIST.forEach {
+        out.println("${it.name} - ${it.price}원")
+    }
+    out.println()
+    out.println()
+    out.println("# 시나리오 시작")
     // n회 테스트
     for (count in 1..COUNT_TEST) {
-        out.println("NEW Event!!")
-        out.println("---------------------")
+        out.println("## 새로운 시나리오")
         val event = event()
         out.println(event.second)
         total += event.first
     }
-    out.println("결과")
-    out.println("---------------------")
-    out.println("총 ${COUNT_TEST}회 실행결과 평균 회비 ${total / COUNT_TEST}원이 필요!")
+    out.println("# 결과")
+    out.println("총 `${COUNT_TEST}`회 실행결과 평균 회비 **${total / COUNT_TEST}**원이 필요!")
 }
